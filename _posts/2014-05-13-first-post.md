@@ -1,3 +1,7 @@
+---
+layout: post
+title: First Post
+---
 I plan for this blog to become a place for me to share some of my experiences using various technologies.  I play a lot with many different frameworks and I feel that it would be good for me to share the more stange or interesting things that I find in the hope that others will also find it interesting.  In this first post I'll discuss some of my observations on getting this blog setup with [Github pages](https://pages.github.com/).
 
 This is my first post using [Jekyllrb](http://jekyllrb.com/) on [Github](http://github.com).  So far I've found it pretty easy to setup and get going.  There are a few things that I've found strange or at least missing in the documentation (ie, what all the different variables on the `post` object are.)  I'm using [Foundation](http://foundation.zurb.com/) for the css which didn't take long to get setup either.  Pathing with this is very easy with no real gotchyas (at least none that I've found so far.)  I'm very curious to see how this system grows as I add more posts.  I have some more work to do to customize it but so far I feel that I have a good starting point.

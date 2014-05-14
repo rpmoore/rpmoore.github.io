@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
-    <title>rpmoore - Blog</title>
+    <title>rpmoore - {{page.title}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="css/foundation.css" />
-    <link rel="stylesheet" href="css/foundation-icons/foundation-icons.css" />
-    <link rel="stylesheet" href="css/syntax.css" />
-    <script src="js/vendor/modernizr.js"> </script>
+    <link rel="stylesheet" href="/css/foundation.css" />
+    <link rel="stylesheet" href="/css/foundation-icons/foundation-icons.css" />
+    <link rel="stylesheet" href="/css/syntax.css" />
+    <script src="/js/vendor/modernizr.js"> </script>
   </head>
   <body>
 
@@ -20,7 +20,7 @@
          <li><a href="/" class="button">Home</a></li>
         </ul>
       </div>
-      <h1>Technical Thoughts <small>This is my blog</small></h1>
+      <h1>Technical Thoughts <small>musings on technology</small></h1>
       <hr />
     </div>
   </div>
@@ -33,20 +33,7 @@
  
     <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
-      {% for post in site.posts %} 
-      <article>
- 
-        <h3><a href="#">{{post.title}}</a></h3>
-        <h6>Written by <a href="#">Ryan Moore</a> on {{post.date}}.</h6>
-
-        {{post.content}}
- 
-      </article>
- 
-      <hr />
- 
-      {% endfor %}
-
+      {{content}}
     </div>
  
     <!-- End Main Content -->
@@ -94,9 +81,9 @@
     </div>
   </footer>
 
-    <script src="js/vendor/jquery.js"> </script>
-    <script src="js/foundation/foundation.js"> </script>
-    <script src="js/foundation/foundation.topbar.js"> </script>
+    <script src="/js/vendor/jquery.js"> </script>
+    <script src="/js/foundation/foundation.js"> </script>
+    <script src="/js/foundation/foundation.topbar.js"> </script>
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
