@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <title>rpmoore - Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/foundation-icons/foundation-icons.css" />
+    <script src="js/vendor/modernizr.js"> </script>
+  </head>
+  <body>
+
+ <!-- Nav Bar -->
+ 
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="nav-bar right">
+       <ul class="button-group">
+         <li><a href="/" class="button">Home</a></li>
+        </ul>
+      </div>
+      <h1>Technical Thoughts <small>This is my blog</small></h1>
+      <hr />
+    </div>
+  </div>
+ 
+  <!-- End Nav -->
+ 
+  <!-- Main Page Content and Sidebar -->
+ 
+  <div class="row">
+ 
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+      {% for post in site.posts %} 
+      <article>
+ 
+        <h3><a href="#">{{post.title}}</a></h3>
+        <h6>Written by <a href="#">Ryan Moore</a> on {{post.date}}.</h6>
+
+        {{post.content}}
+ 
+      </article>
+ 
+      <hr />
+ 
+      {% endfor %}
+
+    </div>
+ 
+    <!-- End Main Content -->
+ 
+    <!-- Sidebar -->
+ 
+    <aside class="large-3 columns">
+ 
+      <h5>Links</h5>
+      <ul class="side-nav">
+        <li><a target="_blank" href="https://aegis.greyrocksoft.com/" title="Hazardous Materials Tracking">Aegis</a></li>
+      </ul>
+ 
+      <div class="panel">
+        <h5>About</h5>
+        <img class="th [radius]" src="https://s.gravatar.com/avatar/47a3cd741fbe2a7eb98ea833bfdfb1e7?s=80" alt="Me" />
+        <p>I'm a software engineer, polyglot and entrepreneur.  I do everything REST and infrustructure.</p>
+      </div>
+ 
+    </aside>
+ 
+    <!-- End Sidebar -->
+  </div>
+ 
+  <!-- End Main Content and Sidebar -->
+ 
+ 
+  <!-- Footer -->
+ 
+  <footer class="row">
+    <div class="large-12 columns">
+      <hr />
+      <div class="row">
+        <div class="large-6 columns">
+          <p>© Copyright Ryan Moore</p>
+        </div>
+        <div class="large-6 columns">
+          <ul class="inline-list right">
+            <li><a href="https://twitter.com/rpmoore" title="My Twitter Account"><i class="fi-social-twitter"> </i></a></li>
+            <li><a href="https://github.com/rpmoore" title="My Github Account"><i class="fi-social-github"> </i></a></li>
+            <li><a href="https://www.linkedin.com/pub/ryan-moore/27/b98/647" title="My Linked-In Account"><i class="fi-social-linkedin"> </i></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+    <script src="js/vendor/jquery.js"> </script>
+    <script src="js/foundation/foundation.js"> </script>
+    <script src="js/foundation/foundation.topbar.js"> </script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>
