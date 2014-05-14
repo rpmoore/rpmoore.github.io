@@ -1,0 +1,20 @@
+<p>When I first started using <a href="http://jekyllrb.com">Jekyll</a> to create this blog I didn't really run into any problems.  It was only when I decided to deploy it to <a href="http://pages.github.com">Github Pages</a> that I ran into problems.  Turns out that the library that Jekyll ships with by default to compile <code>markdown</code> is old and not maintained anymore.  It was an easy fix.  Just had to add this to my <code>_config.yml</code> file:</p>
+
+<div class="panel">
+{% highlight yaml %} 
+markdown: kramdown
+{% endhighlight %}
+</div>
+
+<p><a href="http://github.com">Github</a> notified me of this issue via email which made it easy to diganose and fix.  The second issue that I ran into was when using <code>haml</code> for the <code>index</code> page.  It appears that even with the <a href="https://gist.github.com/dtjm/517556">haml plugin</a> installed for Jekyll, Github didn't want to display it.  As soon as I changed the index file back to <code>index.html</code> Github Pages picked up the blog and started to display it.</p>
+
+<p>I've also run into some interesting issues when trying to use the code highlighting tools in <a href="http://jekyllrb.com">Jekyll</a>.  The default provider works well enough, and I'm able to get the <code>html</code> formatted correctly.  The issue I've ran into is with the styling.  If you read the documentation on the Jekyll site for setting up the <a href="http://jekyllrb.com/docs/templates/#code_snippet_highlighting">highlighter</a> it points you to using a <a href="https://github.com/mojombo/tpw/blob/master/css/syntax.css">stylesheet</a> available on Github.  This works for some languages.  For this post I found that the stylesheet that it points to does not have styles for <code>YAML</code>.  I added the following styles so that at the very least the <code>YAML</code> above is colored:</p>
+
+<div class="panel">
+{% highlight css %}
+.highlight .l-Scalar-Plain { color: #008080 }
+.highlight .p-Indicator { font-weight: bold }
+{% endhighlight %}
+</div>
+
+<p>Thankfully the <code>CSS</code> highlighting worked without me having to do anything!  I'm happy with the results so far.  I'm sure that I'll find more issues as I use more of the system.  Thankfully most of the issues have been pretty easy to solve.</p>
