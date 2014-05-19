@@ -1,0 +1,71 @@
+---
+layout: post
+title: Couchbase with Golang
+---
+<p>In this post I want to talk about using <a href="http://www.couchbase.com">Couchbase</a> with <a href="http://www.golang.com">Go</a>.  To start off with we'll use the Couchbase driver on <a href="https://github.com/couchbaselabs/go-couchbase">Github</a>.</p>
+
+<p>The couchbase driver is pretty easy to use.  Just connect to the database, get your pool and bucket, and then start setting and getting data.  The following code example assumes that you have couchbase installed and running locally as <code>localhost</code>.  For directions on how to install couchbase please reference the documentation on their <a href="http://www.couchbase.com/download">website</a>.</p>
+
+<div class="panel">
+{% highlight go %}
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/couchbaselabs/go-couchbase"
+)
+
+type User struct {
+	Name string `json:"name"`
+	Id   string `json:"id"`
+}
+
+func main() {
+	connection, err := couchbase.Connect("http://localhost:8091")
+	if err != nil {
+		fmt.Errorf("Failed to connect to couchbase (%s)\n", err)
+	}
+
+	pool, err := connection.GetPool("default")
+	if err != nil {
+		fmt.Errorf("Failed to get pool from couchbase (%s)\n", err)
+	}
+
+	bucket, err := pool.GetBucket("default")
+	if err != nil {
+		log.Fatalf("Failed to get bucket from couchbase (%s)\n", err)
+	}
+
+	user := User{"Frank", "1"}
+
+	added, err := bucket.Add(user.Id, 0, user)
+	if err != nil {
+		log.Fatalf("Failed to write data to the cluster (%s)\n", err)
+	}
+
+	if !added {
+		log.Fatalf("A Document with the same id of (%s) already exists.\n", user.Id)
+	}
+
+	user = User{}
+
+	err = bucket.Get("1", &user)
+	if err != nil {
+		log.Fatalf("Failed to get data from the cluster (%s)\n", err)
+	}
+
+	fmt.Printf("Got back a user with a name of (%s) and id (%s)\n", user.Name, user.Id)
+
+}
+{% endhighlight %}
+</div>
+
+<p>The code above doesn't do too many surprising things but there are some things that stood out to me when first using the Couchbase API.  The first thing that I found interesting was the <code>GetPool</code> method.  If you read a lot of the Couchbase documentation <code>Pools</code> are not really mentioned much, it generally appears as <code>Cluster</code>.  After doing some digging, it appears that the Couchbase team put the concept of a Pool into the codebase, but has not yet implemented features to support multiple pools.  Currently you should always use the <code>Default</code> pool.</p>
+
+<p>The other thing that threw me off was in the <code>Add</code> method.  In the code above you'll notice the 0 in <code>bucket.Add(user.Id, 0, user)</code>.  That represents when that document should expire.  Since we do not want the document to expire we pass in 0.</p>
+
+<p>The Couchbase API is very easy to use in Go due to the automatic marshalling support that is built in.  That's what all the <code>`json:"name"`</code> stuff is about in the <code>User</code> struct.</p>
+
+<p>In the next post I'll explore using the Couchbase SDK in a Golang webapp.</p>
