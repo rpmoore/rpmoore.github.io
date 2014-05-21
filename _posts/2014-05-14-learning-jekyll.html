@@ -4,7 +4,7 @@ title: Learning Jekyll
 ---
 <p>When I first started using <a href="http://jekyllrb.com">Jekyll</a> to create this blog I didn't really run into any problems.  It was only when I decided to deploy it to <a href="http://pages.github.com">Github Pages</a> that I ran into problems.  Turns out that the library that Jekyll ships with by default to compile <code>markdown</code> is old and not maintained anymore.  It was an easy fix.  Just had to add this to my <code>_config.yml</code> file:</p>
 
-<div class="panel">
+<div class="panel codeblock">
 {% highlight yaml %} 
 markdown: kramdown
 {% endhighlight %}

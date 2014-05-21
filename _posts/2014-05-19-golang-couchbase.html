@@ -6,57 +6,56 @@ title: Couchbase with Golang
 
 <p>The couchbase driver is pretty easy to use.  Just connect to the database, get your pool and bucket, and then start setting and getting data.  The following code example assumes that you have couchbase installed and running locally as <code>localhost</code>.  For directions on how to install couchbase please reference the documentation on their <a href="http://www.couchbase.com/download">website</a>.</p>
 
-<div class="panel">
+<div class="panel codeblock">
 {% highlight go %}
 package main
 
 import (
-	"fmt"
-	"log"
+    "fmt"
+    "log"
 
-	"github.com/couchbaselabs/go-couchbase"
+    "github.com/couchbaselabs/go-couchbase"
 )
 
 type User struct {
-	Name string `json:"name"`
-	Id   string `json:"id"`
+    Name string `json:"name"`
+    Id   string `json:"id"`
 }
 
 func main() {
-	connection, err := couchbase.Connect("http://localhost:8091")
-	if err != nil {
-		log.Fatalf("Failed to connect to couchbase (%s)\n", err)
-	}
+    connection, err := couchbase.Connect("http://localhost:8091")
+    if err != nil {
+        log.Fatalf("Failed to connect to couchbase (%s)\n", err)
+    }
 
-	pool, err := connection.GetPool("default")
-	if err != nil {
-		log.Fatalf("Failed to get pool from couchbase (%s)\n", err)
-	}
+    pool, err := connection.GetPool("default")
+    if err != nil {
+        log.Fatalf("Failed to get pool from couchbase (%s)\n", err)
+    }
 
-	bucket, err := pool.GetBucket("default")
-	if err != nil {
-		log.Fatalf("Failed to get bucket from couchbase (%s)\n", err)
-	}
+    bucket, err := pool.GetBucket("default")
+    if err != nil {
+        log.Fatalf("Failed to get bucket from couchbase (%s)\n", err)
+    }
 
-	user := User{"Frank", "1"}
+    user := User{"Frank", "1"}
 
-	added, err := bucket.Add(user.Id, 0, user)
-	if err != nil {
-		log.Fatalf("Failed to write data to the cluster (%s)\n", err)
-	}
+    added, err := bucket.Add(user.Id, 0, user)
+    if err != nil {
+        log.Fatalf("Failed to write data to the cluster (%s)\n", err)
+    }
 
-	if !added {
-		log.Fatalf("A Document with the same id of (%s) already exists.\n", user.Id)
-	}
+    if !added {
+        log.Fatalf("A Document with the same id of (%s) already exists.\n", user.Id)
+    }
 
-	user = User{}
+    user = User{}
 
-	err = bucket.Get("1", &user)
-	if err != nil {
-		log.Fatalf("Failed to get data from the cluster (%s)\n", err)
-	}
-
-	fmt.Printf("Got back a user with a name of (%s) and id (%s)\n", user.Name, user.Id)
+    err = bucket.Get("1", &user)
+    if err != nil {
+        log.Fatalf("Failed to get data from the cluster (%s)\n", err)
+    }
+    fmt.Printf("Got back a user with a name of (%s) and id (%s)\n", user.Name, user.Id)
 
 }
 {% endhighlight %}
