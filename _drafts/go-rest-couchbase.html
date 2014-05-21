@@ -4,4 +4,18 @@ title: Creating Restful Services with Go and Couchbase
 ---
 <p>In this post we will talk about using Couchbase with Go, but this time by writing a Restful interface.  This is a continuation of <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a>.</p>
 
-<p></p>
+<p>We'll be using the great <a href="http://http://www.gorillatoolkit.org/pkg/mux">Gorilla Mux</a> library for handling the <code>HTTP</code> requests.  While you don't have to use the Gorilla Mux library, it provides a nice way of handling urls that contain parameters which the default Go lang HTTP Handlers don't handle out of the box.  Using Gorilla Mux in go is really easy.  Create the router, add your handlers and you are off and running.</p>
+
+<div class="panel codeBlock">
+{% highlight go %}
+
+r := mux.NewRouter()
+
+r.HandleFunc("/", HomeHandler)
+r.HandleFunc("/users", UsersHandler)
+r.HandleFunc("/users/{id}", UserHandler)
+
+http.Handle("/", r)
+
+{% endhighlight%}
+</div>
