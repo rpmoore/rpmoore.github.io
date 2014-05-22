@@ -6,7 +6,7 @@ title: Creating Restful Services with Go and Couchbase
 
 <p>We'll be using the great <a href="http://http://www.gorillatoolkit.org/pkg/mux">Gorilla Mux</a> library for handling the <code>HTTP</code> requests.  While you don't have to use the Gorilla Mux library, it provides a nice way of handling urls that contain parameters which the default Golang HTTP Handlers don't do out of the box.  Using Gorilla Mux is really easy.  Create the router, add your handlers and you are off and running.</p>
 
-<div class="panel codeBlock">
+<div class="panel codeblock">
 {% highlight go %}
 
 r := mux.NewRouter()
@@ -23,7 +23,7 @@ http.ListenAndServe(":8080", nil)
 
 <p>Each handler is written using Go's default <code>net/http</code> handler functions.  To get the id parameter from the <code>"/users/{id}"</code> url Gorilla Mux provides a <code>mux.Vars</code> method which makes it easy to retrieve.</p>
 
-<div class="panel codeBlock">
+<div class="panel codeblock">
 {% highlight go %}
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 <p>As was shown in <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a> getting data from Couchbase is pretty straight forward.  So lets start by getting back data on a specific user.  We'll update the example from above to return back a user struct from couchbase.</p>
 
-<div class="panel codeBlock">
+<div class="panel codeblock">
 {% highlight go %}
 type User struct {
     Id string `json:"id"`
@@ -75,7 +75,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 <p>Next we'll add the ability to <code>POST</code> a new user to the <code>UsersHandler</code>.  Then we'll modify the <code>UsersHandler</code> into seperate handlers so that <code>GET</code> and <code>POST</code> are different handlers.  To avoid confusion I want to make it explicit which Handler we are modifying.  We are not modifying the <code>UserHandler</code> from above but the <code>UsersHandler</code>.  This is important because when we do the <code>POST</code> we do not want to post to <code>/users/{identifier}</code>.  We want to <code>POST</code> to <code>/users</code> which is the <code>UsersHandler</code>.</p>
 
-<div class="panel codeBlock">
+<div class="panel codeblock">
 {% highlight go %}
 // Using the same User struct from earlier
 func UsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -115,7 +115,7 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 
 <p>Finally lets clean up the <code>UsersHandler</code> to remove the <code>switch</code> statement so that the <code>POST</code> is in it's own handler.  To do this we'll use one more feature from Gorilla Mux which makes this easy.  First we'll modify the code that registers the handlers to the following.</p>
 
-<div class="panel codeBlock">
+<div class="panel codeblock">
 {% highlight go %}
 r.HandleFunc("/users", UsersHandler).Methods("GET")
 r.HandleFunc("/users", NewUserHandler).Methods("POST")
@@ -125,7 +125,7 @@ r.HandleFunc("/users/{id}", UserHandler)
 
 <p>Then we split the code in the <code>UsersHandler</code> into two handlers.</p>
 
-<div class="panel codeBlock">
+<div class="panel codeblock">
 {% highlight go %}
 func NewUserHandler(w http.ResponseWriter, r *http.Request) {
     user := User{}
