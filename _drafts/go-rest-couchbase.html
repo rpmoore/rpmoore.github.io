@@ -4,7 +4,7 @@ title: Creating Restful Services with Go and Couchbase
 ---
 <p>In this post we will talk about using <a href="http://www.couchbase.com">Couchbase</a> with <a href="http://golang.com">Go</a>, but this time by writing a Restful interface.  This is a continuation of <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a>.</p>
 
-<p>We'll be using the great <a href="http://http://www.gorillatoolkit.org/pkg/mux">Gorilla Mux</a> library for handling the <code>HTTP</code> requests.  While you don't have to use the Gorilla Mux library, it provides a nice way of handling urls that contain parameters which the default Go lang HTTP Handlers don't do out of the box.  Using Gorilla Mux is really easy.  Create the router, add your handlers and you are off and running.</p>
+<p>We'll be using the great <a href="http://http://www.gorillatoolkit.org/pkg/mux">Gorilla Mux</a> library for handling the <code>HTTP</code> requests.  While you don't have to use the Gorilla Mux library, it provides a nice way of handling urls that contain parameters which the default Golang HTTP Handlers don't do out of the box.  Using Gorilla Mux is really easy.  Create the router, add your handlers and you are off and running.</p>
 
 <div class="panel codeBlock">
 {% highlight go %}
@@ -21,7 +21,7 @@ http.ListenAndServe(":8080", nil)
 {% endhighlight%}
 </div>
 
-<p>Each handler is written using Go's default <code>net/http</code> handler functions.  To get the id parameter from the <code>"/users/{id}"</code> url Gorilla Mux provides a <code>mux.Vars</code> method which makes it super easy to retrieve.</p>
+<p>Each handler is written using Go's default <code>net/http</code> handler functions.  To get the id parameter from the <code>"/users/{id}"</code> url Gorilla Mux provides a <code>mux.Vars</code> method which makes it easy to retrieve.</p>
 
 <div class="panel codeBlock">
 {% highlight go %}
@@ -36,7 +36,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 {% endhighlight %}
 </div>
 
-<p>Now that the basics of using Gorilla Mux are out of the way let's throw in Couchbase and actually create a data driven Restful service.  We'll start first by retrieving data from Couchbase.  Then we'll talk about writting new data and updating existing data.</p>
+<p>Now that the basics of using Gorilla Mux are out of the way let's throw in Couchbase and actually create a data driven Restful service.  We'll first start by retrieving data from Couchbase.  Then we'll write new data.</p>
 
 <p>As was shown in <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a> getting data from Couchbase is pretty straight forward.  So lets start by getting back data on a specific user.  We'll update the example from above to return back a user struct from couchbase.</p>
 
@@ -52,7 +52,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
     id := vars["id"]
 
     user := User{}
-
+    
+    //userBucket is created in the global scope for the package
     err := userBucket.Get(id, &user)
     if err != nil {
         if strings.Contains(err.Error(), "KEY_ENOENT") {
@@ -70,9 +71,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 {% endhighlight %}
 </div>
 
-<p>For the most part the code above is pretty straight forward.  Get the <code>id</code> parameter.  Get the <code>user</code>.  Write it out using the built in <a href="http://golang.org/pkg/encoding/json/#Encoder">Go json encoder</a>.  The one thing that is kinda weird is the error handling.  Currently the Couchbase API does not provide a way to inspect the result from the <code>Get</code> method call to see if the <code>id</code> we passed in exists.  That's what the <code> strings.Contains(err.Error(), "KEY_ENOENT")</code> is all about.  It's inspecting the error message that Couchbase returns to see if the reason for the error is <code>KEY_ENOENT</code> which tells us that the <code>id</code> does not exist and we should return a <code>HTTP 404</code> instead of a <code>HTTP 500</code> error message.</p>
+<p>For the most part the code above is pretty straight forward.  Get the <code>id</code> parameter.  Get the <code>user</code>.  Write it out using the built in <a href="http://golang.org/pkg/encoding/json/#Encoder">Go json encoder</a>.  The one thing that is kinda weird is the error handling.  Currently the Couchbase API does not provide a way to inspect the result from the <code>Get</code> method call to see if the <code>id</code> we passed in exists.  That's what the <code> strings.Contains(err.Error(), "KEY_ENOENT")</code> is all about.  It's inspecting the error message that Couchbase returns to see if the reason for the error is <code>KEY_ENOENT</code> which means the <code>id</code> does not exist and we should return a <code>HTTP 404</code> instead of a <code>HTTP 500</code> error message.</p>
 
-<p>Next we'll add the ability to <code>POST</code> a new user to the <code>UsersHandler</code>.  Then we'll modify the <code>UsersHandler</code> into seperate handlers so that <code>GET</code> and <code>POST</code> are different handlers.  To avoid confusion I want to make it explicit which Handler we are modifying.  We are not modifying the <code>UserHandler</code> from above but the <code>UsersHandler</code>.  This is important because when we do the <code>POST</code> we do not want to post to <code>/users/{identifier}</code>.  We want to post to <code>/users</code> which is the <code>UsersHandler</code></p>
+<p>Next we'll add the ability to <code>POST</code> a new user to the <code>UsersHandler</code>.  Then we'll modify the <code>UsersHandler</code> into seperate handlers so that <code>GET</code> and <code>POST</code> are different handlers.  To avoid confusion I want to make it explicit which Handler we are modifying.  We are not modifying the <code>UserHandler</code> from above but the <code>UsersHandler</code>.  This is important because when we do the <code>POST</code> we do not want to post to <code>/users/{identifier}</code>.  We want to <code>POST</code> to <code>/users</code> which is the <code>UsersHandler</code>.</p>
 
 <div class="panel codeBlock">
 {% highlight go %}
@@ -110,7 +111,7 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 {% endhighlight %}
 </div>
 
-<p>No real gotchyas here.  Again due to all the nice json handling code built into Go we were able to Decode the json payload <code>{"id": "2", "name": "UserName"}</code> into a User struct and then Add it to Couchbase.  We added some extra code to inform a user if they are attempting to create a user with a duplicate <code>id</code>.</p>
+<p>No real gotchyas here.  Again due to all the nice json handling code built into Go we were able to Decode the json payload <code>{"id": "2", "name": "UserName"}</code> into a User struct and then Add it to Couchbase.  We added some extra code to inform a user with a <code>HTTP 409 Conflict</code> if they are attempting to create a user with a duplicate <code>id</code>.</p>
 
 <p>Finally lets clean up the <code>UsersHandler</code> to remove the <code>switch</code> statement so that the <code>POST</code> is in it's own handler.  To do this we'll use one more feature from Gorilla Mux which makes this easy.  First we'll modify the code that registers the handlers to the following.</p>
 
@@ -149,7 +150,6 @@ func NewUserHandler(w http.ResponseWriter, r *http.Request) {
     // We need to be sure that we send a response to the client telling them
     // that we successfully created the new entry
     w.WriteHeader(http.StatusCreated)
-    break
 }
 
 func UsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -158,4 +158,4 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 {% endhighlight %}
 </div>
 
-<p>And with that we are able to create new users, display them, all with differet handlers.  I hope this has been helpful for those who are starting out writing Rest interfaces with Go using Couchbase as a database backend.  The final code for this post is hosted on Github <a href="https://github.com/rpmoore/go-couchbase-rest">here</a>.  In the next post we'll look at making our code testable.</p>
+<p>And with that we are able to create new users, display them, all with differet handlers.  I hope this has been helpful for those who are starting out writing Rest interfaces with Couchbase and Go.  The final code for this post is hosted on Github <a href="https://github.com/rpmoore/go-couchbase-rest">here</a>.  In the next post we'll look at making our code testable.</p>
