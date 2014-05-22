@@ -2,9 +2,9 @@
 layout: post
 title: Creating Restful Services with Go and Couchbase
 ---
-<p>In this post we will talk about using Couchbase with Go, but this time by writing a Restful interface.  This is a continuation of <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a>.</p>
+<p>In this post we will talk about using <a href="http://www.couchbase.com">Couchbase</a> with <a href="http://golang.com">Go</a>, but this time by writing a Restful interface.  This is a continuation of <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a>.</p>
 
-<p>We'll be using the great <a href="http://http://www.gorillatoolkit.org/pkg/mux">Gorilla Mux</a> library for handling the <code>HTTP</code> requests.  While you don't have to use the Gorilla Mux library, it provides a nice way of handling urls that contain parameters which the default Go lang HTTP Handlers don't handle out of the box.  Using Gorilla Mux in go is really easy.  Create the router, add your handlers and you are off and running.</p>
+<p>We'll be using the great <a href="http://http://www.gorillatoolkit.org/pkg/mux">Gorilla Mux</a> library for handling the <code>HTTP</code> requests.  While you don't have to use the Gorilla Mux library, it provides a nice way of handling urls that contain parameters which the default Go lang HTTP Handlers don't do out of the box.  Using Gorilla Mux is really easy.  Create the router, add your handlers and you are off and running.</p>
 
 <div class="panel codeBlock">
 {% highlight go %}
@@ -17,5 +17,23 @@ r.HandleFunc("/users/{id}", UserHandler)
 
 http.Handle("/", r)
 
+http.ListenAndServe(":8080", nil)
 {% endhighlight%}
 </div>
+
+<p>Each handler is written using Go's default <code>net/http</code> handler functions.  To get the id parameter from the <code>"/users/{id}"</code> url Gorilla Mux provides a <code>mux.Vars</code> method which makes it super easy to retrieve.</p>
+
+<div class="panel codeBlock">
+{% highlight go %}
+
+func UserHandler(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    id := vars["id"]
+
+    fmt.Fprintf(w, "Page for user (%s)", id)
+}
+
+{% endhighlight %}
+</div>
+
+<p>Now that the basics of using Gorilla Mux are out of the way let's throw in Couchbase and actually create a data driven Restful service .</p>
