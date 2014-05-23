@@ -36,9 +36,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 {% endhighlight %}
 </div>
 
-<p>Now that the basics of using Gorilla Mux are out of the way let's throw in Couchbase and actually create a data driven Restful service.  We'll first start by retrieving data from Couchbase.  Then we'll write new data.</p>
+<p>Now that the basics of using Gorilla Mux are out of the way, let's throw in Couchbase and actually create a data driven Restful service.  We'll first start by retrieving data from Couchbase.  Then we'll write new data.</p>
 
-<p>As was shown in <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a> getting data from Couchbase is pretty straight forward.  So lets start by getting back data on a specific user.  We'll update the example from above to return back a user struct from couchbase.</p>
+<p>As was shown in <a href="/2014/05/19/golang-couchbase.html">Couchbase with Golang</a>, getting data from Couchbase is pretty straight forward.  So lets start by getting back data on a specific user.  We'll update the example from above to return back a user struct from couchbase.</p>
 
 <div class="panel codeblock">
 {% highlight go %}
@@ -71,9 +71,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 {% endhighlight %}
 </div>
 
-<p>For the most part the code above is pretty straight forward.  Get the <code>id</code> parameter.  Get the <code>user</code>.  Write it out using the built in <a href="http://golang.org/pkg/encoding/json/#Encoder">Go json encoder</a>.  The one thing that is kinda weird is the error handling.  Currently the Couchbase API does not provide a way to inspect the result from the <code>Get</code> method call to see if the <code>id</code> we passed in exists.  That's what the <code> strings.Contains(err.Error(), "KEY_ENOENT")</code> is all about.  It's inspecting the error message that Couchbase returns to see if the reason for the error is <code>KEY_ENOENT</code> which means the <code>id</code> does not exist and we should return a <code>HTTP 404</code> instead of a <code>HTTP 500</code> error message.</p>
+<p>For the most part the code above is pretty straight forward.  Get the <code>id</code> parameter.  Get the <code>user</code>.  Write it out using the built in <a href="http://golang.org/pkg/encoding/json/#Encoder">Go json encoder</a>.  The one thing that is kind of weird is the error handling.  Currently the Couchbase API does not provide a way to inspect the result from the <code>Get</code> method call to see if the <code>id</code> we passed in exists.  That's what the <code> strings.Contains(err.Error(), "KEY_ENOENT")</code> is all about.  It's inspecting the error message that Couchbase returns to see if the reason for the error is <code>KEY_ENOENT</code> which means the <code>id</code> does not exist and we should return a <code>HTTP 404</code> instead of a <code>HTTP 500</code> error message.</p>
 
-<p>Next we'll add the ability to <code>POST</code> a new user to the <code>UsersHandler</code>.  Then we'll modify the <code>UsersHandler</code> into seperate handlers so that <code>GET</code> and <code>POST</code> are different handlers.  To avoid confusion I want to make it explicit which Handler we are modifying.  We are not modifying the <code>UserHandler</code> from above but the <code>UsersHandler</code>.  This is important because when we do the <code>POST</code> we do not want to post to <code>/users/{identifier}</code>.  We want to <code>POST</code> to <code>/users</code> which is the <code>UsersHandler</code>.</p>
+<p>Next, we'll add the ability to <code>POST</code> a new user to the <code>UsersHandler</code>.  Then we'll modify the <code>UsersHandler</code> into separate handlers so that <code>GET</code> and <code>POST</code> are processed in different handlers.  To avoid confusion I want to make it explicit which Handler we are modifying.  We are not modifying the <code>UserHandler</code> from above but the <code>UsersHandler</code>.  This is important because when we do the <code>POST</code> we do not want to post to <code>/users/{identifier}</code>.  We want to <code>POST</code> to <code>/users</code> which is the <code>UsersHandler</code>.</p>
 
 <div class="panel codeblock">
 {% highlight go %}
