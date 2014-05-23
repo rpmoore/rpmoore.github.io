@@ -113,7 +113,7 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 
 <p>No real gotchyas here.  Again due to all the nice json handling code built into Go we were able to Decode the json payload <code>{"id": "2", "name": "UserName"}</code> into a User struct and then Add it to Couchbase.  We added some extra code to inform a user with a <code>HTTP 409 Conflict</code> if they are attempting to create a user with a duplicate <code>id</code>.</p>
 
-<p>Finally lets clean up the <code>UsersHandler</code> to remove the <code>switch</code> statement so that the <code>POST</code> is in it's own handler.  To do this we'll use one more feature from Gorilla Mux which makes this easy.  First we'll modify the code that registers the handlers to the following.</p>
+<p>Finally, lets clean up the <code>UsersHandler</code> to remove the <code>switch</code> statement so that the <code>POST</code> is in it's own handler.  To do this we'll use one more feature from Gorilla Mux which makes removing the <code>switch</code> statement easy.  First we'll modify the code that registers the handlers to the following.</p>
 
 <div class="panel codeblock">
 {% highlight go %}
@@ -123,7 +123,7 @@ r.HandleFunc("/users/{id}", UserHandler)
 {% endhighlight %}
 </div>
 
-<p>Then we split the code in the <code>UsersHandler</code> into two handlers.</p>
+<p>We add a new handler that will only handle <code>POST</code> and modify the origial to only handle <code>GET</code>.  Then we split the code in the <code>UsersHandler</code> into two handlers.</p>
 
 <div class="panel codeblock">
 {% highlight go %}
